@@ -10,30 +10,11 @@ import (
 var players map[string]net.IP = make(map[string]net.IP)
 var start bool = false
 
+// PART For game creation
+
 func createGame(username string) {
 	players[username] = GetOutboundIP();
 	waitForPlayers();
-}
-
-func joinGame(ip string, username string){
-    data := url.Values{
-        "ip": {GetOutboundIP().String()},
-        "username": {username},
-    }
-
-    http.PostForm("http://"+ip+":9000/join", data);
-    waitForGameStart();
-}
-
-func waitForGameStart(){
-    http.HandleFunc("/start", startHandler);
-    http.ListenAndServe(":9000", nil)
-}
-
-func startHandler(w http.ResponseWriter, req *http.Request){
-    if(req.Method == http.MethodPost){
-        fmt.Println("start");
-    }
 }
 
 func waitForPlayers(){
@@ -56,8 +37,14 @@ func waitForPlayers(){
 
 func sendStartToPlayers(){
     me := true
+    var data url.Values
+    for username, ip := range(players){
+        data[username] = []string{ip.String()}
+    }
     for _, value := range(players){
         if(!me){
+            
+            
             http.PostForm("http://" + value.String() + ":9000/start", nil);
         }
         me = false
@@ -92,6 +79,39 @@ func listenPlayersHandler(w http.ResponseWriter, req *http.Request){
                
     }
 }
+
+
+// PART For a player to join a game
+
+
+func joinGame(ip string, username string){
+    data := url.Values{
+        "ip": {GetOutboundIP().String()},
+        "username": {username},
+    }
+
+    http.PostForm("http://"+ip+":9000/join", data);
+    waitForGameStart();
+}
+
+func waitForGameStart(){
+    http.HandleFunc("/start", startHandler);
+    http.ListenAndServe(":9000", nil)
+}
+
+func startHandler(w http.ResponseWriter, req *http.Request){
+    if(req.Method == http.MethodPost){
+        for username, ip := range(req.PostForm){
+            players[username] = net.ParseIP(ip[0]);
+        }
+
+        for username, ip := range(players){
+            fmt.Println(username + " => " + ip.String());
+        }
+    }
+}
+
+// Get IP func
 
 func GetOutboundIP() net.IP {
     conn, err := net.Dial("udp", "8.8.8.8:80")
