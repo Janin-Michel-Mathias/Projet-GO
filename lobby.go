@@ -45,7 +45,7 @@ func sendStartToPlayers(){
         if(!me){
             
             
-            http.PostForm("http://" + value.String() + ":9000/start", nil);
+            http.PostForm("http://" + value.String() + ":9000/start", data);
         }
         me = false
     }
