@@ -138,20 +138,20 @@ func getGameSet(private bool, boats []boat) string{
 	letters := [10]string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
 	for i:= 0; i < 10; i++{
 		gameSet += letters[i];
-		for j:= 0; j < 11; j++{
+		for j:= 0; j < 10; j++{
 			gameSet +=" | ";
-			if(isBoatPos([2]int{i,j -1}, boats)) {
+			if(isBoatPos([2]int{i,j}, boats)) {
 				if(private){
 					gameSet +="1";
 				} else {
-					if(playedCases[i][j - 1]){
+					if(playedCases[i][j]){
 						gameSet += "X";
 					}else {
 						gameSet +=" ";
 					}
 				}
 			} else {
-				if(playedCases[i][j - 1]){
+				if(playedCases[i][j]){
 					gameSet += "."
 				}else {
 					gameSet +=" ";
