@@ -24,7 +24,8 @@ func waitForPlayers(){
         resp := ask();
         switch(lobbyCommands(resp)){
         case 1:
-            sendStartToPlayers();
+            go sendStartToPlayers();
+            startGame();
             start = true
             loop = false
             break;
@@ -33,6 +34,7 @@ func waitForPlayers(){
             break;
         };
     }
+    
 }
 
 func sendStartToPlayers(){
@@ -48,7 +50,6 @@ func sendStartToPlayers(){
         }
         me = false
     }
-    startGame();
 }
 
 func listenForPlayers() {

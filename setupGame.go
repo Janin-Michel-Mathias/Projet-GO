@@ -34,29 +34,37 @@ func generateBoats() []boat{
 func validPos(boat boat, boats []boat) bool{
 	x := boat.position[0];
 	y := boat.position[1];
-	overBoat := false;
 	for i := 0; i < boat.length; i++ {
-		for _, value := range(boats){
-			for i := 0; i < value.length; i++ {
-				if(value.isVertical){
-					if(x == value.position[0] && y == value.position[1] + i){
-						overBoat = true;
-					}
-				} else{
-					if(x == value.position[0] + i && y == value.position[1]){
-						overBoat = true;
-					}
-				}
-				if(overBoat){
-					return false;
-				}
-			}
+
+			if(isBoatPos([2]int{x,y}, boats)){
+				return false;
+			}	
+
 			if(boat.isVertical){
 				y++;
 			}else{
 				x++;
 			}
 		}
+		return true;
 	}
-	return true;
+	
+
+
+func isBoatPos(position [2]int, boats []boat) bool{
+	for i:= 0; i < len(boats); i++ {
+		x := boats[i].position[0];
+		y := boats[i].position[1];
+		for j:=0; j < boats[i].length; j++{
+			if(position[0] == x && position[1] == y){
+				return true
+			}
+			if(boats[i].isVertical){
+				y++;
+			}else {
+				x++;
+			}
+		}
+	}
+	return false;
 }

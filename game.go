@@ -5,6 +5,7 @@ import (
     "io/ioutil"
     "log"
     "net/http"
+	"strconv"
 )
 
 
@@ -22,7 +23,7 @@ func startGame(){
 	go allowRoutes();
 	for {
 		resp := ask();
-		gameCommands(resp);
+		gameCommands(resp, boats);
 	}
 }
 
@@ -33,11 +34,12 @@ func allowRoutes(){
 
 func gameSetHandler(w http.ResponseWriter, req *http.Request){
 	if(req.Method == http.MethodGet){
-		fmt.Fprintf(w, " 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 ");
+		fmt.Fprintf(w, getGameSet(false, boats));
 	}
 }
 
 func askForGameSet(player string){
+	fmt.Println("ok");
 	if value, ok := players[player]; ok {
 
 		resp, err := http.Get("http://" + value.String() + ":9000/gameSet");
@@ -56,4 +58,35 @@ func askForGameSet(player string){
 	
 		fmt.Println(string(body))
 	}
+}
+
+func getGameSet(private bool, boats []boat) string{
+	gameSet := "";
+	gameSet +="   ";
+	for i:= 0; i < 10; i++{
+		gameSet +=" ";
+			if(i != 0){
+				gameSet +="| ";
+			}
+			gameSet += strconv.Itoa(i) ;
+	}
+	gameSet +="\n";
+	letters := [10]string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
+	for i:= 0; i < 10; i++{
+		gameSet += letters[i];
+		for j:= 0; j < 11; j++{
+			gameSet +=" | ";
+			if(isBoatPos([2]int{i,j}, boats)) {
+				if(private){
+					gameSet +="1";
+				} else {
+					gameSet +=" ";
+				}
+			} else {
+				gameSet +=" ";
+			}
+		}
+		gameSet +="\n";
+	}
+	return gameSet;
 }
