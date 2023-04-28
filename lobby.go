@@ -41,6 +41,10 @@ func sendStartToPlayers(){
     for username, ip := range(players){
         data[username] = []string{ip.String()}
     }
+
+    for username, ip := range(data){
+        fmt.Println(username + ip[0]);
+    }
     for _, value := range(players){
         if(!me){
             
@@ -101,6 +105,12 @@ func waitForGameStart(){
 
 func startHandler(w http.ResponseWriter, req *http.Request){
     if(req.Method == http.MethodPost){
+        if err := req.ParseForm(); err != nil { // Parsing des paramètres envoyés
+            fmt.Println("Something went bad"); // par le client et gestion
+            // d’erreurs
+            fmt.Fprintln(w, "Something went bad");
+            return
+        }
         for username, ip := range(req.PostForm){
             players[username] = net.ParseIP(ip[0]);
         }
