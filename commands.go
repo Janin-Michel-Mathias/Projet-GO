@@ -66,6 +66,17 @@ func lobbyCommands(resp []string) int{
 	return 0;
 }
 
+func gameCommands(resp []string){
+	if(len(resp) > 1){
+		switch(resp[0]){
+		case "/gameSet":
+			if(len(resp) == 2 ){
+				askForGameSet(player string);
+			}
+	}
+	}
+}
+
 func commandNotFound(command string){
 	fmt.Println("/!\\ Command not found type '/"+ command +" -h' for help");
 }

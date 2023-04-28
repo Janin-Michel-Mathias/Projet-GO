@@ -5,12 +5,6 @@ import (
 	"time"
 )
 
-type boat struct{
-	position [2]int
-	length int
-	isVertical bool
-}
-
 func generateBoats() []boat{
 	var boats []boat;
 	lengths := [5]int{5,4,3,3,2};
