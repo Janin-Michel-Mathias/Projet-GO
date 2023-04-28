@@ -32,10 +32,11 @@ import (
 		}
 	case "/join":
 		if(len(resp) > 1){
+			if(len(resp) > 3 && resp[2] == "as"){
+				joinGame(resp[1], resp[3]);
+			}
 			if(resp[1] == "-h"){
 				fmt.Println("/join [addr]")
-			}else{
-				fmt.Println("join");
 			}
 		}else{
 			commandNotFound("join");

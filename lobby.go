@@ -3,6 +3,7 @@ package main
 import (
 	"net"
     "net/http"
+    "net/url"
 	"fmt"
 )
 
@@ -14,10 +15,10 @@ func createGame(username string) {
 	waitForPlayers();
 }
 
-func joinGame(ip string, username){
+func joinGame(ip string, username string){
     data := url.Values{
-        "ip": {GetOutboundIP().String()}
-        "username": {username}
+        "ip": {GetOutboundIP().String()},
+        "username": {username},
     }
 
     http.PostForm("http://"+ip+":9000/join", data);
