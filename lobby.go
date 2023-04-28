@@ -37,7 +37,7 @@ func waitForPlayers(){
 
 func sendStartToPlayers(){
     me := true
-    var data url.Values
+    data := make(url.Values)
     for username, ip := range(players){
         data[username] = []string{ip.String()}
     }
