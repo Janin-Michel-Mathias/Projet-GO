@@ -1,5 +1,5 @@
 package main
-    // "net/http"
+
 import (
     "fmt"
     "bufio"
@@ -16,7 +16,6 @@ func ask() []string{
 }
 
 func main(){
-    // http.HandleFunc("/join", joinHandler);
     for {
         resp := ask();
 		if(!homeCommands(resp)){
