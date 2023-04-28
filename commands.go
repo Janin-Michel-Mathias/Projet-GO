@@ -76,6 +76,12 @@ func gameCommands(resp []string, boats [] boat){
 			if(len(resp) == 2 ){
 				askForGameSet(resp[1]);
 			}
+		case "/players":
+			if(len(resp) == 1){
+				for username, _ := range(players) {
+					fmt.Println(username);
+				}
+			}
 	}
 	}
 }
