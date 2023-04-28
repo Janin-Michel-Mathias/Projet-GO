@@ -24,7 +24,8 @@ func waitForPlayers(){
         resp := ask();
         switch(lobbyCommands(resp)){
         case 1:
-            sendStartToPlayers();
+            go sendStartToPlayers();
+            startGame();
             start = true
             loop = false
             break;
@@ -33,6 +34,7 @@ func waitForPlayers(){
             break;
         };
     }
+    
 }
 
 func sendStartToPlayers(){
@@ -113,6 +115,7 @@ func startHandler(w http.ResponseWriter, req *http.Request){
         for username, ip := range(players){
             fmt.Println(username + " => " + ip.String());
         }
+        startGame();
     }
 }
 

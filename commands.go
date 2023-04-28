@@ -66,6 +66,20 @@ func lobbyCommands(resp []string) int{
 	return 0;
 }
 
+func gameCommands(resp []string, boats [] boat){
+	if(len(resp) > 0){
+		switch(resp[0]){
+		case "/gameSet":
+			if(len(resp) == 1){
+				fmt.Println(getGameSet(true, boats));
+			}
+			if(len(resp) == 2 ){
+				askForGameSet(resp[1]);
+			}
+	}
+	}
+}
+
 func commandNotFound(command string){
 	fmt.Println("/!\\ Command not found type '/"+ command +" -h' for help");
 }
