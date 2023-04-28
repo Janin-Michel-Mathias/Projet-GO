@@ -71,7 +71,7 @@ func gameCommands(resp []string){
 		switch(resp[0]){
 		case "/gameSet":
 			if(len(resp) == 2 ){
-				askForGameSet(player string);
+				askForGameSet(resp[1]);
 			}
 	}
 	}
