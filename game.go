@@ -20,10 +20,10 @@ func startGame(){
 	boats = generateBoats();
 
 	go allowRoutes();
-
-	resp := ask();
-	gameCommands(resp);
-
+	for {
+		resp := ask();
+		gameCommands(resp);
+	}
 }
 
 func allowRoutes(){
