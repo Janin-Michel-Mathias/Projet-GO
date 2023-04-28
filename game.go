@@ -5,7 +5,9 @@ import (
     "io/ioutil"
     "log"
     "net/http"
+	"net/url"
 	"strconv"
+	"strings"
 )
 
 
@@ -16,9 +18,16 @@ type boat struct{
 }
 
 var boats []boat;
+var playedCases [10][10]bool;
 
 func startGame(){
 	boats = generateBoats();
+
+	for i:= 0; i < 10; i++{
+		for j:= 0; j < 10; j++{
+			playedCases[i][j] = false;
+		}
+	}
 
 	go allowRoutes();
 	for {
@@ -27,9 +36,64 @@ func startGame(){
 	}
 }
 
+func attack (username string, playCase string){
+	data := url.Values{
+		"playCase": {playCase},
+	}
+
+	http.PostForm("http://"+players[username].String()+"/attack", data);
+}
+
 func allowRoutes(){
 	http.HandleFunc("/gameSet", gameSetHandler);
+	http.HandleFunc("/attack", attackHandler);
 	http.ListenAndServe(":9000", nil)
+}
+
+func attackHandler(w http.ResponseWriter, req *http.Request){
+	if(req.Method == http.MethodPost){
+		if err := req.ParseForm(); err != nil { // Parsing des paramètres envoyés
+            fmt.Println("Something went bad"); // par le client et gestion
+            // d’erreurs
+            fmt.Fprintln(w, "Something went bad");
+            return
+            }
+		attackCase := req.PostForm["attack"];
+
+		x, y := parseAttack(attackCase[0]);
+		if(!playedCases[x][y]){
+			if(isBoatPos([2]int{x, y}, boats)){
+				if(checkBoatAlive([2]int{x,y}, boats)){
+					fmt.Fprintf(w, "true");
+				} else {
+					fmt.Fprintf(w, "flood");
+				}
+				playedCases[x][y] = true;
+			} else {
+				fmt.Fprintf(w, "false");
+			}
+		}
+	}
+}
+
+func parseAttack(attackCase string)(int ,int){
+	parts := strings.Split(attackCase, "");
+	firstPartMap := map[string]int{
+		"A": 0,
+		"B": 1,
+		"C": 2,
+		"D": 3,
+		"E": 4,
+		"F": 5,
+		"G": 6,
+		"H": 7,
+		"I": 8,
+		"J": 9,
+	}
+
+	partTwo, _ := strconv.Atoi(parts[1])
+
+	return firstPartMap[parts[0]], partTwo;
 }
 
 func gameSetHandler(w http.ResponseWriter, req *http.Request){
@@ -80,13 +144,50 @@ func getGameSet(private bool, boats []boat) string{
 				if(private){
 					gameSet +="1";
 				} else {
+					if(playedCases[i][j]){
+						gameSet += "X";
+					}
 					gameSet +=" ";
 				}
 			} else {
-				gameSet +=" ";
+				if(playedCases[i][j]){
+					gameSet += "."
+				}else {
+					gameSet +=" ";
+				}
 			}
 		}
 		gameSet +="\n";
 	}
 	return gameSet;
+}
+
+func checkBoatAlive(pos [2]int, boats []boat) bool{
+	boatIndex := getBoat(pos, boats);
+	for i:= 0; i < boats[boatIndex].length; i++{
+		if(boats[boatIndex].isVertical){
+			if(!playedCases[boats[boatIndex].position[0]][boats[boatIndex].position[1] + i]){
+				return true
+			}
+		}
+	}
+	return false;
+}
+
+func getBoat(pos [2]int, boats []boat)int {
+	for i:= 0; i< len(boats); i++{
+		x := boats[i].position[0];
+		y:= boats[i].position[1];
+		for j:= 0; j < boats[i].length; j++{
+			if(x == pos[0] && y == pos[1]){
+				return i;
+			}
+			if(boats[i].isVertical){
+				y++;
+			}else{
+				x++;
+			}
+		}
+	} 
+	return -1;
 }
