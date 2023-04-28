@@ -37,18 +37,13 @@ func waitForPlayers(){
 
 func sendStartToPlayers(){
     me := true
-    data := make(url.Values)
+    data := url.Values{}
     for username, ip := range(players){
-        data[username] = []string{ip.String()}
+        data.Add(username, ip.String());
     }
 
-    for username, ip := range(data){
-        fmt.Println(username + ip[0]);
-    }
     for _, value := range(players){
         if(!me){
-            
-            
             http.PostForm("http://" + value.String() + ":9000/start", data);
         }
         me = false
