@@ -43,7 +43,7 @@ func waitForPlayers(){
         resp := ask();
         switch(lobbyCommands(resp)){
         case 1:
-            fmt.Println("start");
+            sendStartToPlayers();
             start = true
             loop = false
             break;
@@ -51,6 +51,16 @@ func waitForPlayers(){
             loop = false
             break;
         };
+    }
+}
+
+func sendStartToPlayers(){
+    me := true
+    for _, value := range(players){
+        if(!me){
+            http.PostForm("http://" + value.String() + ":9000/start", nil);
+        }
+        me = false
     }
 }
 
