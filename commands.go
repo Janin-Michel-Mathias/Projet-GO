@@ -84,7 +84,7 @@ func gameCommands(resp []string, boats [] boat){
 			}
 		case "/attack":
 			if(len(resp) == 3){
-				attack(resp[2], resp[3]);
+				attack(resp[1], resp[2]);
 			}
 	}
 	}
