@@ -48,7 +48,7 @@ func sendStartToPlayers(){
         }
         me = false
     }
-    game();
+    startGame();
 }
 
 func listenForPlayers() {
@@ -114,7 +114,7 @@ func startHandler(w http.ResponseWriter, req *http.Request){
         for username, ip := range(players){
             fmt.Println(username + " => " + ip.String());
         }
-        game();
+        startGame();
     }
 }
 
