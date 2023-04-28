@@ -22,6 +22,18 @@ func joinGame(ip string, username string){
     }
 
     http.PostForm("http://"+ip+":9000/join", data);
+    waitForGameStart();
+}
+
+func waitForGameStart(){
+    http.HandleFunc("/start", startHandler);
+    http.ListenAndServe(":9000", nil)
+}
+
+func startHandler(w http.ResponseWriter, req *http.Request){
+    if(req.Method == http.MethodPost){
+        fmt.Println("start");
+    }
 }
 
 func waitForPlayers(){
